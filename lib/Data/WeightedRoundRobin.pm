@@ -22,22 +22,23 @@ sub _normalize {
     my ($self, $data) = @_;
     return unless defined $data;
 
-    my ($value, $weight);
+    my ($key, $value, $weight);
 
     # { value => 'foo', weight => 1 }
     if (ref $data eq 'HASH') {
-        ($value, $weight) = @$data{qw/value weight/};
+        ($key, $value, $weight) = @$data{qw/key value weight/};
         return unless defined $value;
         return if defined $weight && $weight <= 0;
+        $key = $value unless defined $key; 
         $weight ||= $self->{default_weight},
     }
     # foo
     else {
-        $value  = $data;
+        $key = $value = $data;
         $weight = $self->{default_weight};
     }
 
-    return { value => $value, weight => $weight };
+    return { key => $key, value => $value, weight => $weight };
 }
 
 sub set {
@@ -47,18 +48,19 @@ sub set {
     my $normalized = {};
     for my $data (@$list) {
         $data = $self->_normalize($data) || next;
-        $normalized->{$data->{value}} = $data->{weight};
+        $normalized->{$data->{key}} = $data;
     }
 
     my $rrlist = [];
     my $weights = 0;
     for my $key (sort keys %$normalized) {
         unshift @$rrlist, {
-            value  => $key,
+            key    => $key,
+            value  => $normalized->{$key}{value},
             range  => $weights,
-            weight => $normalized->{$key},
+            weight => $normalized->{$key}{weight},
         };
-        $weights += $normalized->{$key};
+        $weights += $normalized->{$key}{weight};
     }
 
     $self->{rrlist}  = $rrlist;
@@ -74,7 +76,7 @@ sub add {
 
     my $added = 1;
     for my $data (@$rrlist) {
-        if ($data->{value} eq $value->{value}) {
+        if ($data->{key} eq $value->{key}) {
             $added = 0;
             last;
         }
@@ -95,7 +97,7 @@ sub replace {
 
     my $replaced = 0;
     for my $data (@$rrlist) {
-        if ($data->{value} eq $value->{value}) {
+        if ($data->{key} eq $value->{key}) {
             $data = $value;
             $replaced = 1;
             last;
@@ -116,7 +118,7 @@ sub remove {
     my $removed = 0;
     my $newlist = [];
     for my $data (@$rrlist) {
-        unless ($data->{value} eq $value) {
+        unless ($data->{key} eq $value) {
             push @$newlist, $data; 
         }
         else {
@@ -163,8 +165,9 @@ Data::WeightedRoundRobin - Serve data in a Weighted RoundRobin manner.
   my $dwr = Data::WeightedRoundRobin->new([
       qw/foo bar/,
       { value => 'baz', weight => 50 },
+      { key => 'hoge', value => [qw/fuga piyo/], weight => 120 },
   ]);
-  $drw->next; # foo : bar : baz = 100 : 100 : 50
+  $drw->next; # 'foo' : 'bar' : 'baz' : [qw/fuga piyo/] = 100 : 100 : 50 : 120
 
 =head1 DESCRIPTION
 
@@ -181,11 +184,12 @@ Creates a Data::WeightedRoundRobin instance.
   $dwr = Data::WeightedRoundRobin->new();               # empty rr data
   $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);  # foo : bar = 100 : 100
 
-  # foo : bar : baz = 120 : 100 : 50
+  # foo : bar : baz : qux = 100 : 100 : 120 : 50 :
   $dwr = Data::WeightedRoundRobin->new([
-      { value => 'foo', weight => 120 },
-      'bar',
-      { value => 'baz', weight => 50 },
+      'foo',
+      { value => 'bar' },
+      { value => 'baz', weight => 120 },
+      { key => 'qux', value => [qw/q u x/], weight => 50 },
   ]);
 
 Sets default_weight option, DEFAULT is B<< $Data::WeightedRoundRobin::DEFAULT_WEIGHT >>.
@@ -222,8 +226,9 @@ Sets datum.
 
 You can specify the following data.
 
-  [qw/foo/]              # eq [ { value => 'foo', weight => 100 } ]
-  [{ value => 'foo' }]   # eq [ { value => 'foo', weight => 100 } ]
+  [qw/foo/]                           # eq [ { key => 'foo', value => 'foo', weight => 100 } ]
+  [{ value => 'foo' }]                # eq [ { key => 'foo', value => 'foo', weight => 100 } ]
+  [{ key => 'foo', value => 'foo' }]  # eq [ { key => 'foo', value => 'foo', weight => 100 } ] 
 
 =item C<< add($value:SCALAR || $value:HASHREF) >>
 

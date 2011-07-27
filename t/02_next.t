@@ -57,4 +57,21 @@ subtest 'foo: 50, bar: 100, baz: 20' => sub {
     is $dwr->next, 'foo', 'rand 120';
 };
 
+subtest 'with refarenced data' => sub {
+    my $dwr = Data::WeightedRoundRobin->new([
+        { key => 'foo', value => [qw/f o o/], weight => 50 },
+        { value => 'bar', weight => 100 },
+        { value => 'baz', weight => 20 },
+    ]);
+    my $rands = [0, 100, 99, 150, 110, 120];
+    local $RAND = sub { shift @$rands };
+
+    is $dwr->next, 'bar', 'rand 0';
+    is $dwr->next, 'baz', 'rand 100';
+    is $dwr->next, 'bar', 'rand 99';
+    is_deeply $dwr->next, [qw/f o o/], 'rand 150';
+    is $dwr->next, 'baz', 'rand 110';
+    is_deeply $dwr->next, [qw/f o o/], 'rand 120';
+};
+
 done_testing;

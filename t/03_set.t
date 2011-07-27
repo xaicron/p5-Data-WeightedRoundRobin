@@ -15,8 +15,8 @@ subtest 'set qw/foo bar/' => sub {
     my $dwr = Data::WeightedRoundRobin->new;
     ok $dwr->set([qw/foo bar/]), 'set';
     is_deeply $dwr->{rrlist}, [
-        { value => 'foo', weight => 100, range => 100 },
-        { value => 'bar', weight => 100, range => 0 },
+        { key => 'foo', value => 'foo', weight => 100, range => 100 },
+        { key => 'bar', value => 'bar', weight => 100, range => 0 },
     ], 'rrlist';
     is $dwr->{weights}, 200, 'weights';
 };
@@ -28,8 +28,8 @@ subtest 'over write' => sub {
         { value => 'fuga', weight => 100 },
     ]), 'set';
     is_deeply $dwr->{rrlist}, [
-        { value => 'hoge', weight => 50, range => 100 },
-        { value => 'fuga', weight => 100, range => 0 },
+        { key => 'hoge', value => 'hoge', weight => 50, range => 100 },
+        { key => 'fuga', value => 'fuga', weight => 100, range => 0 },
     ], 'rrlist';
     is $dwr->{weights}, 150, 'weights';
 };
