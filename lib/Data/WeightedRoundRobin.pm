@@ -155,15 +155,109 @@ __END__
 
 =head1 NAME
 
-Data::WeightedRoundRobin -
+Data::WeightedRoundRobin - Serve data in a Weighted RoundRobin manner.
 
 =head1 SYNOPSIS
 
   use Data::WeightedRoundRobin;
+  my $dwr = Data::WeightedRoundRobin->new([
+      qw/foo bar/,
+      { value => 'baz', weight => 50 },
+  ]);
+  $drw->next; # foo : bar : baz = 100 : 100 : 50
 
 =head1 DESCRIPTION
 
 Data::WeightedRoundRobin is
+
+=head1 METHODS
+
+=over
+
+=item C<< new([$list:ARRAYREF, $option:HASHREF]) >>
+
+Creates a Data::WeightedRoundRobin instance.
+
+  $dwr = Data::WeightedRoundRobin->new();               # empty rr data
+  $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);  # foo : bar = 100 : 100
+
+  # foo : bar : baz = 120 : 100 : 50
+  $dwr = Data::WeightedRoundRobin->new([
+      { value => 'foo', weight => 120 },
+      'bar',
+      { value => 'baz', weight => 50 },
+  ]);
+
+Sets default_weight option, DEFAULT is B<< $Data::WeightedRoundRobin::DEFAULT_WEIGHT >>.
+
+  # foo : bar : baz = 0.3 : 0.7 : 1
+  $dwr = Data::WeightedRoundRobin->new([
+      { value => 'foo', weight => 0.3 },
+      { value => 'bar', weight => 0.7 },
+      { value => 'baz' },
+  ], { default_weight => 1 });
+
+=item C<< next() >>
+
+Fetch a data.
+
+  my $dwr = Data::WeightedRoundRobin->new([
+      qw/foo bar/],
+      { value => 'baz', weight => 50 },
+  );
+  
+  # Infinite loop
+  while (my $data = $dwr->next) {
+      say $data; # foo : bar : baz = 100 : 100 : 50 
+  }
+ 
+=item C<< set($list:ARRAYREF) >>
+
+Sets datum.
+
+  $drw->set([
+      { value => 'foo', weight => 100 },
+      { value => 'bar', weight => 50  },
+  ]);
+
+You can specify the following data.
+
+  [qw/foo/]              # eq [ { value => 'foo', weight => 100 } ]
+  [{ value => 'foo' }]   # eq [ { value => 'foo', weight => 100 } ]
+
+=item C<< add($value:SCALAR || $value:HASHREF) >>
+
+Add a value. You can add NOT already value. Returned value is 1 or 0, but if error is undef.
+
+  use Test::More;
+  my $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);
+  is $dwr->add('baz'), 1, 'added baz';
+  is $dwr->add('foo'), 0, 'foo is exists';
+  is $dwr->add({ value => 'hoge', weight => 80 }), 1, 'added hoge with weight 80';
+  is $dwr->add(), undef, 'error';
+
+=item C<< replace($value:SCALAR || $value::HASHREF) >>
+
+Replace a value. Returned value is 1 or 0, but if error is undef.
+
+  use Test::More;
+  my $dwr = Data::WeightedRoundRobin->new([qw/foo/, { value => 'bar', weight => 50 }]);
+  is $dwr->replace('baz'), 1, 'replaced bar'; 
+  is $dwr->replace('hoge'), 0, 'hoge is not found';
+  is $dwr->replace({ value => 'foo', weight => 80 }), 1, 'replaced foo with weight 80';
+  is $dwr->replace(), undef, 'error';
+
+=item C<< remove($value:SCALAR) >>
+
+Remove a value. Returned value is 1 or 0, but if error is undef.
+
+  use Test::More;
+  my $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);
+  is $dwr->remove('foo'), 1, 'removed foo';
+  is $dwr->remove('hoge'), 0, 'hoge is not found';
+  is $dwr->remove(), undef, 'error';
+
+=back
 
 =head1 AUTHOR
 
