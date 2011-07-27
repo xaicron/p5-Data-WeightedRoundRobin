@@ -178,7 +178,9 @@ Data::WeightedRoundRobin - Serve data in a Weighted RoundRobin manner.
 
 =head1 DESCRIPTION
 
-Data::WeightedRoundRobin is
+Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
+
+Inspired from MyDNS RR logic.
 
 =head1 METHODS
 
