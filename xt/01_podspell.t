@@ -32,6 +32,7 @@ all_pod_files_spelling_ok('lib');
 __DATA__
 Data::WeightedRoundRobin
 RoundRobin
+MyDNS
 
 # personal section
 xaicron
