@@ -15,6 +15,11 @@ subtest 'empty' => sub {
     is $dwr->next, undef, 'next ok' for 1..3;
 };
 
+subtest 'a value' => sub {
+    my $dwr = Data::WeightedRoundRobin->new([qw/foo/]);
+    is $dwr->next, 'foo', 'next ok' for 1..3;
+};
+
 subtest 'foo: 100, bar: 100' => sub {
     my $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);
     my $rands = [0, 100, 10, 200];
