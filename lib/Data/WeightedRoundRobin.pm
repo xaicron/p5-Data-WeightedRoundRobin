@@ -12,7 +12,7 @@ sub new {
     my $self = bless {
         rrlist         => [],
         weights        => 0,
-        last_index     => 0,
+        list_num       => 0,
         default_weight => $args->{default_weight} || $DEFAULT_WEIGHT,
     }, $class;
     $self->set($list) if $list;
@@ -64,9 +64,9 @@ sub set {
         $weights += $normalized->{$key}{weight};
     }
 
-    $self->{rrlist}     = $rrlist;
-    $self->{weights}    = $weights;
-    $self->{last_index} = $#$rrlist;
+    $self->{rrlist}   = $rrlist;
+    $self->{weights}  = $weights;
+    $self->{list_num} = scalar @$rrlist;
 
     return 1;
 }
@@ -137,9 +137,9 @@ sub remove {
 
 sub next {
     my ($self, $key) = @_;
-    my ($rrlist, $weights, $end) = @$self{qw/rrlist weights last_index/};
-    return unless $end; # empty data
-    my $start = 0;
+    my ($rrlist, $weights, $list_num) = @$self{qw/rrlist weights list_num/};
+    return unless $list_num; # empty data
+    my ($start, $end) = (0, $list_num - 1);
 
     my $rweight = rand($weights);
     while ($start < $end) {
