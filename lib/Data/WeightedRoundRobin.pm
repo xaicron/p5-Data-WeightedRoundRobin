@@ -35,6 +35,10 @@ sub _normalize {
     }
     # foo
     else {
+        # \{ foo => 'bar' }
+        if (ref $data eq 'REF' && ref $$data eq 'HASH') {
+            $data = $$data;
+        }
         $key = $value = $data;
         $weight = $self->{default_weight};
     }
@@ -197,6 +201,7 @@ Creates a Data::WeightedRoundRobin instance.
       { value => 'bar' },
       { value => 'baz', weight => 120 },
       { key => 'qux', value => [qw/q u x/], weight => 50 },
+      \{ foo => 'bar' },
   ]);
 
 Sets default_weight option, DEFAULT is B<< $Data::WeightedRoundRobin::DEFAULT_WEIGHT >>.

@@ -87,4 +87,15 @@ subtest 'referenced value' => sub {
     is $dwr->{default_weight}, 100, 'default_weight';
 };
 
+subtest 'HASHREF-REF' => sub {
+    my $data = { foo => 'bar' };
+    my $dwr = Data::WeightedRoundRobin->new([\$data]);
+    isa_ok $dwr, 'Data::WeightedRoundRobin';
+    is_deeply $dwr->{rrlist}, [
+        { key => "$data", value => $data, weight => 100, range => 0 },
+    ], 'rrlist';
+    is $dwr->{weights}, 100, 'weights';
+    is $dwr->{default_weight}, 100, 'default_weight';
+};
+
 done_testing;
