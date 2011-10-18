@@ -174,13 +174,11 @@ Data::WeightedRoundRobin - Serve data in a Weighted RoundRobin manner.
       { value => 'baz', weight => 50 },
       { key => 'hoge', value => [qw/fuga piyo/], weight => 120 },
   ]);
-  $drw->next; # 'foo' : 'bar' : 'baz' : [qw/fuga piyo/] = 100 : 100 : 50 : 120
+  $dwr->next; # 'foo' : 'bar' : 'baz' : [qw/fuga piyo/] = 100 : 100 : 50 : 120
 
 =head1 DESCRIPTION
 
 Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
-
-Inspired from MyDNS RR logic.
 
 =head1 METHODS
 
