@@ -1,4 +1,8 @@
 Revision history for Perl extension Data::WeightedRoundRobin
 
+0.02  Wed Oct 19 02:03:08 2011
+    - fix doc
+    - support \{ foo => 'bar' } value
+
 0.01  Wed Jul 27 16:50:30 2011
     - original version
