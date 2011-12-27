@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib 'lib';
 use Benchmark qw(cmpthese :hireswallclock);
 use Data::WeightedRoundRobin;
 use Data::RoundRobin;
