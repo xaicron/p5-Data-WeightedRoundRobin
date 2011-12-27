@@ -5,6 +5,7 @@ use warnings;
 our $VERSION = '0.02';
 
 our $DEFAULT_WEIGHT = 100;
+our $BTREE_BORDER = 10;
 
 sub new {
     my ($class, $list, $args) = @_;
@@ -14,6 +15,7 @@ sub new {
         weights        => 0,
         list_num       => 0,
         default_weight => $args->{default_weight} || $DEFAULT_WEIGHT,
+        btree_border   => $args->{btree_border} || $BTREE_BORDER,
     }, $class;
     $self->set($list) if $list;
     return $self;
@@ -146,17 +148,25 @@ sub next {
     my ($start, $end) = (0, $list_num - 1);
 
     my $rweight = rand($weights);
-    while ($start < $end) {
-        my $mid = int(($start + $end) / 2);
-        if ($rrlist->[$mid]{range} <= $rweight) {
-            $end = $mid;
-        }
-        else {
-            $start = $mid + 1;
+    if ($list_num < $self->{btree_border}) {
+        # sequential
+        for my $rr (@$rrlist) {
+            return $rr->{value} if $rweight >= $rr->{range};
         }
     }
-
-    return $rrlist->[$start]{value};
+    else {
+        # b-tree
+        while ($start < $end) {
+            my $mid = int(($start + $end) / 2);
+            if ($rrlist->[$mid]{range} <= $rweight) {
+                $end = $mid;
+            }
+            else {
+                $start = $mid + 1;
+            }
+        }
+        return $rrlist->[$start]{value};
+    }
 }
 
 1;
