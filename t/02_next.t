@@ -10,6 +10,9 @@ BEGIN {
 
 use Data::WeightedRoundRobin;
 
+my $looped;
+RERUN:
+
 subtest 'empty' => sub {
     my $dwr = Data::WeightedRoundRobin->new;
     is $dwr->next, undef, 'next ok' for 1..3;
@@ -78,5 +81,10 @@ subtest 'with refarenced data' => sub {
     is $dwr->next, 'baz', 'rand 110';
     is_deeply $dwr->next, [qw/f o o/], 'rand 120';
 };
+
+unless ($looped++) {
+    local $Data::WeightedRoundRobin::BTREE_BORDER = 0;
+    goto RERUN;
+}
 
 done_testing;
