@@ -149,7 +149,7 @@ sub next {
 
     my $rweight = rand($weights);
     if ($list_num < $self->{btree_border}) {
-        # sequential
+        # linear
         for my $rr (@$rrlist) {
             return $rr->{value} if $rweight >= $rr->{range};
         }
