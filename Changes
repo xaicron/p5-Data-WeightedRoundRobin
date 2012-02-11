@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::WeightedRoundRobin
 
+0.03  Sun Feb 12 02:00:30 2012
+    - changed: choose the better algorithm for a little list.
+
 0.02  Wed Oct 19 02:03:08 2011
     - fix doc
     - support \{ foo => 'bar' } value
