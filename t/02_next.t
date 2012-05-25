@@ -82,6 +82,21 @@ subtest 'with refarenced data' => sub {
     is_deeply $dwr->next, [qw/f o o/], 'rand 120';
 };
 
+subtest 'support 0' => sub {
+    my $dwr = Data::WeightedRoundRobin->new([
+        { value => 'foo', weight => 0 },
+        { value => 'bar', weight => 0 },
+    ]);
+    my $rands = [0, 1, 0, 1, 0, 1];
+    local $RAND = sub { shift @$rands };
+    is $dwr->next, 'foo', 'rand 0';
+    is $dwr->next, 'bar', 'rand 1';
+    is $dwr->next, 'foo', 'rand 0';
+    is $dwr->next, 'bar', 'rand 1';
+    is $dwr->next, 'foo', 'rand 0';
+    is $dwr->next, 'bar', 'rand 1';
+};
+
 unless ($looped++) {
     local $Data::WeightedRoundRobin::BTREE_BORDER = 0;
     goto RERUN;

@@ -31,9 +31,9 @@ sub _normalize {
     if (ref $data eq 'HASH') {
         ($key, $value, $weight) = @$data{qw/key value weight/};
         return unless defined $value;
-        return if defined $weight && $weight <= 0;
+        return if defined $weight && $weight < 0;
         $key = $value unless defined $key; 
-        $weight ||= $self->{default_weight},
+        $weight = $self->{default_weight} unless defined $weight;
     }
     # foo
     else {
@@ -146,6 +146,9 @@ sub next {
     my ($rrlist, $weights, $list_num) = @$self{qw/rrlist weights list_num/};
     return unless $list_num; # empty data
     my ($start, $end) = (0, $list_num - 1);
+
+    # if all weight is 0, choose random
+    return $rrlist->[int rand $list_num]->{value} if $weights == 0;
 
     my $rweight = rand($weights);
     if ($list_num < $self->{btree_border}) {
