@@ -2,7 +2,7 @@ package Data::WeightedRoundRobin;
 
 use strict;
 use warnings;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 our $DEFAULT_WEIGHT = 100;
 our $BTREE_BORDER = 10;

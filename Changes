@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::WeightedRoundRobin
 
+0.04  Fri May 25 14:38:45 2012
+    - changed: support weight 0 data
+
 0.03  Sun Feb 12 02:00:30 2012
     - changed: choose the better algorithm for a little list.
 
