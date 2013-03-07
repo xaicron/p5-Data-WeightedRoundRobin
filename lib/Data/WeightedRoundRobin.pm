@@ -7,6 +7,8 @@ our $VERSION = '0.04';
 our $DEFAULT_WEIGHT = 100;
 our $BTREE_BORDER = 10;
 
+use Scope::Guard qw(guard);
+
 sub new {
     my ($class, $list, $args) = @_;
     $args ||= {};
@@ -172,6 +174,12 @@ sub next {
     }
 }
 
+sub save {
+    my $self = shift;
+    my $orig_rrlist = $self->{rrlist};
+    guard { $self->set($orig_rrlist) };
+}
+
 1;
 __END__
 
@@ -286,6 +294,20 @@ Remove a value. Returned value is 1 or 0, but if error is undef.
   is $dwr->remove('foo'), 1, 'removed foo';
   is $dwr->remove('hoge'), 0, 'hoge is not found';
   is $dwr->remove(), undef, 'error';
+
+=item C<< save() >>
+
+When destroyed C<< $guard >> is gone, will return to the saved state.
+
+  my $dwr = Data::WeightedRoundRobin->new([qw/foo bar/]);
+  {
+      my $guard = $drw->save;
+      $drw->remove('foo');
+      is $drw->next, 'bar';
+  }
+
+  # return to saved state
+  my $data = $dwr->next; # foo or bar
 
 =back
 
