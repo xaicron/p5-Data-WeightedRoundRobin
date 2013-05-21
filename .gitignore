@@ -18,3 +18,10 @@ xs/*obj
 *.old
 dll*
 *~
+/Data-WeightedRoundRobin-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json
+!LICENSE
