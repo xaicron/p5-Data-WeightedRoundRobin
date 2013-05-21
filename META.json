@@ -68,7 +68,7 @@
          "web" : "https://github.com/xaicron/p5-Data-WeightedRoundRobin"
       }
    },
-   "version" : "0.04",
+   "version" : "0.06",
    "x_contributors" : [
       "xaicron <xaicron@gmail.com>"
    ]

@@ -2,6 +2,9 @@ Revision history for Perl extension Data::WeightedRoundRobin
 
 {{$NEXT}}
 
+0.06 2013-05-21T11:09:21Z
+    - minil migrate
+
 0.05  Thu Mar  7 22:43:22 2013
     - added save() method
 
