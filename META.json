@@ -27,8 +27,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.36",
-            "Test::More" : "0.96"
+            "ExtUtils::MakeMaker" : "6.36"
          }
       },
       "configure" : {
@@ -49,6 +48,11 @@
       "runtime" : {
          "requires" : {
             "Scope::Guard" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.96"
          }
       }
    },
