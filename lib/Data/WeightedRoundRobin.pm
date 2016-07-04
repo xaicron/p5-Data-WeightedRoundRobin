@@ -280,7 +280,7 @@ Replace a value. Returned value is 1 or 0, but if error is undef.
 
   use Test::More;
   my $dwr = Data::WeightedRoundRobin->new([qw/foo/, { value => 'bar', weight => 50 }]);
-  is $dwr->replace('baz'), 1, 'replaced bar'; 
+  is $dwr->replace('bar'), 1, 'replaced bar to default weight (50 -> 100)';
   is $dwr->replace('hoge'), 0, 'hoge is not found';
   is $dwr->replace({ value => 'foo', weight => 80 }), 1, 'replaced foo with weight 80';
   is $dwr->replace(), undef, 'error';
