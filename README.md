@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/xaicron/p5-Data-WeightedRoundRobin.svg?branch=master)](https://travis-ci.org/xaicron/p5-Data-WeightedRoundRobin)
 # NAME
 
 Data::WeightedRoundRobin - Serve data in a Weighted RoundRobin manner.
@@ -34,7 +35,7 @@ Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
             \{ foo => 'bar' },
         ]);
 
-    Sets default\_weight option, DEFAULT is __$Data::WeightedRoundRobin::DEFAULT\_WEIGHT__.
+    Sets default\_weight option, DEFAULT is **$Data::WeightedRoundRobin::DEFAULT\_WEIGHT**.
 
         # foo : bar : baz = 0.3 : 0.7 : 1
         $dwr = Data::WeightedRoundRobin->new([
@@ -47,12 +48,11 @@ Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
 
     Fetch a data.
 
-        my $dwr = Data::WeightedRoundRobin->new([
-            qw/foo bar/],
-            { value => 'baz', weight => 50 },
-        );
-        
-
+         my $dwr = Data::WeightedRoundRobin->new([
+             qw/foo bar/],
+             { value => 'baz', weight => 50 },
+         );
+         
          # Infinite loop
          while (my $data = $dwr->next) {
              say $data; # foo : bar : baz = 100 : 100 : 50 
@@ -91,7 +91,7 @@ Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
 
         use Test::More;
         my $dwr = Data::WeightedRoundRobin->new([qw/foo/, { value => 'bar', weight => 50 }]);
-        is $dwr->replace('baz'), 1, 'replaced bar'; 
+        is $dwr->replace('bar'), 1, 'replaced bar to default weight (50 -> 100)';
         is $dwr->replace('hoge'), 0, 'hoge is not found';
         is $dwr->replace({ value => 'foo', weight => 80 }), 1, 'replaced foo with weight 80';
         is $dwr->replace(), undef, 'error';
@@ -122,7 +122,7 @@ Data::WeightedRoundRobin is a Serve data in a Weighted RoundRobin manner.
 
 # AUTHOR
 
-xaicron <xaicron {at} cpan.org>
+xaicron &lt;xaicron {at} cpan.org>
 
 # COPYRIGHT
 
