@@ -1,9 +1,11 @@
+requires 'Data::Clone';
 requires 'Scope::Guard';
 
-on build => sub {
-    requires 'ExtUtils::MakeMaker', '6.36';
+on configure => sub {
+    requires 'Module::Build::Tiny', '0.035';
+    requires 'perl', '5.008_001';
 };
 
-on test => sub {
-    requires 'Test::More', '0.96';
+on develop => sub {
+    requires 'Data::RoundRobin';
 };
