@@ -8,6 +8,7 @@ our $DEFAULT_WEIGHT = 100;
 our $BTREE_BORDER = 10;
 
 use Scope::Guard qw(guard);
+use Data::Clone qw(clone);
 
 sub new {
     my ($class, $list, $args) = @_;
@@ -176,7 +177,7 @@ sub next {
 
 sub save {
     my $self = shift;
-    my $orig_rrlist = $self->{rrlist};
+    my $orig_rrlist = clone $self->{rrlist};
     guard { $self->set($orig_rrlist) };
 }
 
